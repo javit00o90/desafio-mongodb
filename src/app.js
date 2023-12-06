@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import ProductManager from './dao/models/products.model.js';
-import Message from './dao/models/messages.model.js';
+import messageModel from './dao/models/messages.model.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -66,14 +66,14 @@ io.on('connection', async (socket) => {
         const productos = await productManager.getProducts();
         socket.emit('productos', productos);
 
-        const chatHistory = await Message.find().sort({ timestamp: 1 });
+        const chatHistory = await messageModel.find().sort({ timestamp: 1 });
         socket.emit('chatHistory', chatHistory);
     } catch (error) {
         console.error('Error al obtener productos o historial de chat:', error.message);
     }
 
     socket.on('sendMessage', async (message) => {
-        const newMessage = new Message({
+        const newMessage = new messageModel({
             user: socket.userEmail,
             message,
         });
