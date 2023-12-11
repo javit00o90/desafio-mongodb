@@ -60,18 +60,18 @@ class ProductManager {
             if (!mongoose.Types.ObjectId.isValid(id)) {
                 return { error: "ID de producto no válido.", status: 400 };
             }
-
-            const product = await Product.findOne({ _id: id });
+    
+            const product = await Product.findOne({ _id: id, status: true });
             if (!product) {
-                return { error: "Producto no encontrado.", status: 404 };
+                return { error: "Producto no encontrado o eliminado.", status: 404 };
             }
-
+    
             for (const key in updates) {
                 if (key in product) {
                     product[key] = updates[key];
                 }
             }
-
+    
             await product.save();
             return { message: "Producto actualizado correctamente.", status: 200 };
         } catch (error) {
